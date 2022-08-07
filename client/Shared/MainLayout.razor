@@ -1,0 +1,17 @@
+﻿@using client.Components.Navbar
+@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
+
+<BlazoredToasts Position="ToastPosition.TopCenter"
+                Timeout="5"
+                IconType="IconType.FontAwesome"
+                ShowProgressBar="true"
+                SuccessClass="success-toast-override"
+                ErrorIcon="fa fa-bug" 
+                SuccessIcon="fa fa-thumbs-up" />
+
+
+<div class="d-flex flex-column" style="min-height: 100vh;">
+    <Navbar/>
+    <div class="flex-grow-1 d-flex flex-column">@Body</div>
+</div>

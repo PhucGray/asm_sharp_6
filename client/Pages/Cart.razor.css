@@ -1,0 +1,41 @@
+﻿.wrapper {
+    background-color: #f8f8f8;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    flex-grow: 1;
+}
+
+.main {
+    background-color: #fff;
+    width: 90%;
+    margin-inline: auto;
+    display: flex;
+    align-items: flex-start;
+    padding-inline: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.cart-row {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.food-img {
+    height: 100%;
+    aspect-ratio: 1;
+}
+
+.food-name {
+    margin-inline: 20px;
+}
+
+.quantity {
+    border: 1px solid #d1d1d1;
+    display: grid;
+    place-items: center;
+    width: 36px;
+}

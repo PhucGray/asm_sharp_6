@@ -1,0 +1,66 @@
+﻿@page "/detail/{id:int}"
+
+@inject NavigationManager Navigation
+@inject IToastService toastService
+
+
+<div class="wrapper">
+    <div class="content">
+        <img class="food-img" src="images/burger.jpg"/>
+
+        <div class="flex-grow-1 px-3 ms-5">
+            <div class="food-name">Burger bò @id</div>
+
+            <div class="label">Số lượng</div>
+
+            <div class="d-flex align-items-center justify-content-between mt-1">
+                <div class="d-flex">
+                    <button class="btn btn-secondary" @onclick="decrease">-</button>
+                    <div class="quantity">@count</div>
+                    <button class="btn btn-warning" @onclick="increase">+</button>
+                </div>
+
+                <div class="price">46.000 VND</div>
+            </div>
+
+            <button @onclick="add" class="btn btn-warning text-white fw-bold w-100 mt-4 py-3">Thêm vào giỏ</button>
+            <button @onclick="goToCart" class="btn btn-secondary text-white fw-bold w-100 mt-2 py-3">Đi đến giỏ hàng</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private int count = 1;
+
+    private void decrease()
+    {
+        if(count > 1)
+        {
+            count--;
+        }
+    }
+
+    private void increase()
+    {
+        count++;
+    }
+
+    //
+
+    private void add()
+    {
+        toastService.ShowSuccess("Thêm sản phẩm vào giỏ thành công", "Thông báo");
+    }
+
+
+    private void goToCart()
+    {
+        Navigation.NavigateTo("/cart");
+    }
+}

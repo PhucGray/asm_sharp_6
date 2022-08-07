@@ -1,0 +1,38 @@
+﻿@page "/order"
+@inject NavigationManager Navigation
+
+<div style="padding: 20px;">
+    <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Mã số</th>
+      <th scope="col">Tổng tiền</th>
+      <th scope="col">Người đặt</th>
+      <th scope="col">Ngày đặt</th>
+      <th scope="col">Trạng thái</th>
+      <th scope="col">Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>300.000 VND</td>
+      <td>Nguyen Van A</td>
+      <td>20/08/2022</td>
+      <td>Đang giao</td>
+      <td>
+          <button class="btn btn-info text-white"  @onclick="@(() => goToDetail(3))">
+              <i class="bi bi-info-circle"></i>
+          </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+@code {
+    private void goToDetail(int id)
+    {
+        Navigation.NavigateTo("/order-detail/" + id);
+    }
+}

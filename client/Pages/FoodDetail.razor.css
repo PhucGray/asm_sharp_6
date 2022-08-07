@@ -1,0 +1,44 @@
+﻿.wrapper {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    width: 900px;
+    margin-inline: auto;
+}
+
+.content {
+    display: flex;
+    padding-inline: 20px;
+    padding-bottom: 20px;
+    flex: 1;
+}
+
+.food-img {
+    height: 300px;
+    aspect-ratio: 1;
+}
+
+.food-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #edbd21;
+}
+
+.label {
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.quantity {
+    border: 1px solid #d1d1d1;
+    display: grid;
+    place-items: center;
+    width: 36px;
+}
+
+.price {
+    font-size: 24px;
+    color: #fb6767;
+    font-weight: bold;
+}

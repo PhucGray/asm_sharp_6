@@ -1,0 +1,69 @@
+﻿@page "/"
+@using Microsoft.Extensions.Logging
+@inject ILogger<Index> logger
+@inject NavigationManager Navigation
+
+<div class="foods">
+    <div class="food" @onclick="@(() => goToDetail(3))">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+    </div>
+
+      <div class="food">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+      </div>
+
+      <div class="food">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+      </div>
+
+      <div class="food">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+      </div>
+
+       <div class="food">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+    </div>
+
+      <div class="food">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+      </div>
+
+      <div class="food">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+      </div>
+
+      <div class="food">
+        <img class="food-img" src="images/burger.jpg"/>
+        <div class="food-name">Burger bò</div>
+        <div class="food-price">20.000 VND</div>
+        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+      </div>
+</div>
+
+@code {
+    private void goToDetail(int id)
+    {
+        Navigation.NavigateTo("/detail/" + id);
+    }
+}

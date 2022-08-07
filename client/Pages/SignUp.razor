@@ -1,0 +1,59 @@
+﻿@page "/sign-up" 
+@using share.Models.UI
+@using Microsoft.Extensions.Logging
+@inject ILogger<SignIn> logger
+@inject NavigationManager Navigation
+
+<EditForm Model="@signUpModel" OnValidSubmit="@handleSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-sign-up">
+        <div class="form-group">
+            <label for="email" class="form-label">Họ và tên</label>
+            <InputText id="fullName" @bind-Value="signUpModel.FullName" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => signUpModel.FullName)" />
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="email" class="form-label">Email</label>
+            <InputText id="email" @bind-Value="signUpModel.Email" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => signUpModel.Email)" />
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <InputText id="password" @bind-Value="signUpModel.Password" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => signUpModel.Password)" />
+            </div>
+        </div>
+
+        
+        <button type="submit" class="btn btn-primary w-100 mt-4">Đăng ký</button>
+    </div>
+</EditForm>
+
+<div class="text-center mt-3">
+    <div>
+        Đã có tài khoản <button class="btn btn-link" @onclick="goToSignIn">Đăng nhập</button>
+    </div>
+</div>
+
+@code {
+    private SignUpModel signUpModel = new();
+
+    private void handleSubmit()
+    {
+        logger.LogInformation(signUpModel.FullName);
+        logger.LogInformation(signUpModel.Email);
+        logger.LogInformation(signUpModel.Password);
+    }
+
+    private void goToSignIn()
+    {
+        Navigation.NavigateTo("/sign-in");   
+    }
+}

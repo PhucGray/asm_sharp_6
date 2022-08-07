@@ -1,0 +1,50 @@
+﻿@page "/sign-in" 
+@using share.Models.UI
+@using Microsoft.Extensions.Logging
+@inject ILogger<SignIn> logger
+@inject NavigationManager Navigation
+
+<EditForm Model="@signInModel" OnValidSubmit="@handleSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-sign-in">
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <InputText id="email" @bind-Value="signInModel.Email" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => signInModel.Email)" />
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <InputText id="password" @bind-Value="signInModel.Password" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => signInModel.Password)" />
+            </div>
+        </div>
+
+        
+        <button type="submit" class="btn btn-primary w-100 mt-4">Đăng nhập</button>
+    </div>
+</EditForm>
+
+<div class="text-center mt-3">
+    <div>
+        Chưa có tài khoản <button class="btn btn-link" @onclick="goToSignUp">Đăng ký</button>
+    </div>
+</div>
+
+@code {
+    private SignInModel signInModel = new();
+
+    private void handleSubmit()
+    {
+        logger.LogInformation(signInModel.Email);
+        logger.LogInformation(signInModel.Password);
+    }
+
+    private void goToSignUp()
+    {
+        Navigation.NavigateTo("/sign-up");   
+    }
+}

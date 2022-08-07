@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@using Blazored.Toast
+@using Blazored.Toast.Configuration
+@using admin.Components
+
+<BlazoredToasts Position="ToastPosition.TopCenter"
+                Timeout="5"
+                IconType="IconType.FontAwesome"
+                ShowProgressBar="true"
+                SuccessClass="success-toast-override"
+                ErrorIcon="fa fa-bug" 
+                SuccessIcon="fa fa-thumbs-up" />
+
+<div class="d-flex" style="min-height: 100vh;">
+    <Sidebar />
+    <div class="flex-grow-1 d-flex flex-column">@Body</div>
+</div>

@@ -1,0 +1,52 @@
+﻿@page "/food"
+@inject NavigationManager Navigation
+
+<div>
+    <button @onclick="goToAdd" class="btn btn-primary mt-4 mb-3 px-5" style="margin-left: 20px;">Thêm</button>
+</div>
+
+<div style="padding: 20px;">
+    <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Mã số</th>
+      <th scope="col">Tên</th>
+      <th scope="col">Hình ảnh</th>
+      <th scope="col">Giá</th>
+      <th scope="col">Trạng thái</th>
+      <th scope="col">Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Burger bò</td>
+      <td>
+          <img src="images/food-placeholder.png" height="50"/>
+      </td>
+      <td>20.000 VND</td>
+      <td>Còn hàng</td>
+      <td>
+         @* <button class="btn btn-info text-white">
+              <i class="bi bi-info-circle"></i>
+          </button>*@
+
+          <button class="btn btn-success">
+              <i class="bi bi-pencil"></i>
+          </button>
+
+          <button class="btn btn-secondary">
+              <i class="bi bi-x-lg"></i>
+          </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+@code {
+    private void goToAdd()
+    {
+        Navigation.NavigateTo("/food/add");
+    }
+}

@@ -1,0 +1,34 @@
+﻿.navbar-wrapper {
+    display: flex;
+    align-items: center;
+    padding-inline: 40px;
+    height: 90px;
+    justify-content: space-between;
+}
+
+.search-wrapper {
+    max-width: 600px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right-item {
+    margin-inline: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-inline: 5px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+
+    width: 100px;
+}
+.navbar-right-item:hover {
+    background-color: #f3f3f3;
+}

@@ -1,0 +1,30 @@
+﻿@page "/order-detail/{id:int}"
+@inject NavigationManager Navigation
+
+<div style="padding: 20px;">
+    <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Mã số</th>
+      <th scope="col">Tên</th>
+      <th scope="col">Giá</th>
+      <th scope="col">Số lượng</th>
+      <th scope="col">Thành tiền</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Burger</td>
+      <td>30.000 VND</td>
+      <td>3</td>
+      <td>90.000 VND</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+@code {
+   [Parameter]
+    public int id { get; set; }
+}

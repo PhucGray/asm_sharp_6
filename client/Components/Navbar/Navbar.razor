@@ -1,0 +1,61 @@
+﻿@inject NavigationManager Navigation
+
+<div class="navbar-wrapper">
+    <img @onclick="goHome" height="50" src="svg/logo.svg" style="cursor: pointer;"/>
+
+    <div class="search-wrapper input-group">
+        <input type="search" class="form-control" placeholder="Nhập từ khoá cần tìm"/>
+        <button type="button" class="btn btn-primary">
+             <i class="bi bi-search"></i>
+        </button>
+    </div>
+
+    <div class="navbar-right">
+        <div @onclick="goToHistory" class="navbar-right-item">
+            <i class="bi bi-clock-history" style="font-size: 26px;"></i>
+            <div>Lịch sử</div>
+        </div>
+
+        <div @onclick="goToCart" class="navbar-right-item">
+            <i class="bi bi-cart4" style="font-size: 26px;"></i>
+            <div>Giỏ hàng</div>
+        </div>
+
+        <div @onclick="goToSignIn" class="navbar-right-item">
+            <i class="bi bi-person-circle" style="font-size: 26px;"></i>
+            <div>Đăng nhập</div>
+        </div>
+
+        @*<div @onclick="logout" class="navbar-right-item">
+            <i class="bi bi-box-arrow-right" style="font-size: 26px;"></i>
+            <div>Đăng xuất</div>
+        </div>*@
+    </div>
+</div>
+
+@code {
+    private void goHome()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void goToHistory()
+    {
+        Navigation.NavigateTo("/history");
+    }
+
+    private void goToCart()
+    {
+        Navigation.NavigateTo("/cart");
+    }
+
+    private void goToSignIn()
+    {
+        Navigation.NavigateTo("/sign-in");
+    }
+
+    private void logout()
+    {
+        
+    }
+}

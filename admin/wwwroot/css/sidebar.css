@@ -1,0 +1,26 @@
+﻿.sidebar-wrapper {
+    width: 250px;
+    background-color: #232323;
+    padding-inline: 15px;
+    padding-top: 30px;
+}
+
+.sidebar-item {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-inline: 20px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sidebar-item:hover {
+    background-color: #757575;
+}
+
+.sidebar-item--active {
+    background-color: #757575;
+}
