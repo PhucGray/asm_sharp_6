@@ -75,38 +75,18 @@ namespace api.Services
             }
         }
 
-        public async Task<dynamic> Add(IFormCollection data)
+        public async Task<dynamic> Add(FoodModel newFood)
         {
             try
             {
-                var files = data.Files;
+                await _context.Foods.AddAsync(newFood);
+                await _context.SaveChangesAsync();
 
-
-                if (data.TryGetValue("foodData", out var someData))
+                return new
                 {
-                    var newFood = JsonSerializer.Deserialize<FoodModel>(someData);
-
-                    var dbFoodName = await _context.Foods.Where(food => food.Name == newFood.Name).ToListAsync();
-
-                    if (dbFoodName.Count > 0) return new
-                    {
-                        Success = false,
-                        Message = "Tên món ăn đã tồn tại"
-                    };
-
-                    string imagePath = await ImageHelper.Upload(files[0], _webHostEnvironment);
-
-                    newFood.Image = imagePath;
-
-                    await _context.Foods.AddAsync(newFood);
-                    await _context.SaveChangesAsync();
-
-                    return new
-                    {
-                        Success = true,
-                        Data = newFood
-                    };
-                }
+                    Success = true,
+                    Data = newFood
+                };
             }
             catch (Exception)
             {

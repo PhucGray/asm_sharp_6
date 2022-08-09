@@ -10,7 +10,7 @@ using share.Models;
 namespace api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220809143820_api_csharp_6")]
+    [Migration("20220809151439_api_csharp_6")]
     partial class api_csharp_6
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,7 @@ namespace api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

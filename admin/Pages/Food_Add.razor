@@ -2,8 +2,9 @@
 @using Blazored.Toast.Services
 @using Microsoft.Extensions.Logging
 @using share.Models.UI
+@using static System.Net.WebRequestMethods
 @inject IToastService toastService
-
+@inject HttpClient Http
 @inject ILogger<Food_Add> logger
 
 
@@ -54,18 +55,41 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary w-50 py-2 mt-4 d-block mx-auto">Thêm</button>
+    <button type="submit" class="btn btn-primary w-50 py-2 mt-4 d-block mx-auto" disabled=@loading>
+        @if(loading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        } else
+        {
+            <span>Thêm</span>
+        }
+    </button>
 </EditForm>
 
 
 @code {
+    private bool loading { get; set; } = false;
     private FoodModel foodModel = new();
     private string foodImg { get; set; } = "";
     private bool status { get; set; } = true;
     private ImageModel fileBase64;
 
-    private void handleSubmit()
+    private async Task handleSubmit()
     {
+        loading = true;
+
+        FoodModel newFood = new FoodModel()
+        {
+            Name = foodModel.Name,
+            Price = foodModel.Price,
+            Status = foodModel.Status,
+            IsDeleted = foodModel.IsDeleted,
+            Image = foodImg
+        };
+
+        using (var msg = await Http.PostAsJsonAsync("https://localhost:44329/api/foods", newFood)) 
+
+        loading = false;
         toastService.ShowSuccess("Thêm món ăn thành công", "Thông báo");
         foodImg = "";
         fileBase64 = new ImageModel();
