@@ -85,6 +85,7 @@ namespace api.Services
                     Message = "Email đã được đăng ký"
                 };
 
+                signUpData.RoleId = 3;
                 signUpData.Password = PasswordHelper.Hash(signUpData.Password);
 
                 await _context.Users.AddAsync(signUpData);
