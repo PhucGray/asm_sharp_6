@@ -16,6 +16,10 @@ namespace share.Models.UI
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Vui lòng nhập số điện thoại")]
+        [Phone(ErrorMessage = "Số điện thoại không đúng định dạng")]
+        public string Phone { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
         public string Password { get; set; }
     }

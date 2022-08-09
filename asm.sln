@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "share", "share\share.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "admin", "admin\admin.csproj", "{15913AC2-2F33-47EB-86C9-BB730058D2D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{ED87CB73-8976-4B3C-8124-98A1AC08FEB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{15913AC2-2F33-47EB-86C9-BB730058D2D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15913AC2-2F33-47EB-86C9-BB730058D2D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15913AC2-2F33-47EB-86C9-BB730058D2D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED87CB73-8976-4B3C-8124-98A1AC08FEB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED87CB73-8976-4B3C-8124-98A1AC08FEB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED87CB73-8976-4B3C-8124-98A1AC08FEB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED87CB73-8976-4B3C-8124-98A1AC08FEB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
