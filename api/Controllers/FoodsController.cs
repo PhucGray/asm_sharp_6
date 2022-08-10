@@ -48,9 +48,9 @@ namespace api.Controllers
 
         // PUT api/foods/3
         [HttpPut("{id}")]
-        public async Task<dynamic> Update(IFormCollection formData, int id)
+        public async Task<dynamic> Update(FoodModel updatedFood, int id)
         {
-            return await _food.Update(formData, id);
+            return await _food.Update(updatedFood, id);
         }
 
         // DELETE api/foods/4

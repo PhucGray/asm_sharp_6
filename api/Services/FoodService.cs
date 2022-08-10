@@ -1,13 +1,11 @@
 ﻿using api.Interfaces;
+using api.Utils;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using share.Models;
 using System;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using api.Utils;
 
 
 namespace api.Services
@@ -28,20 +26,11 @@ namespace api.Services
             try
             {
                 var foods = await _context.Foods.ToListAsync();
-
-                return new
-                {
-                    Success = true,
-                    Data = foods
-                };
+                return foods;
             }
             catch (Exception)
             {
-                return new
-                {
-                    Success = false,
-                    Message = "Food(GetAll): error"
-                };
+                return null;
             }
         }
 
@@ -53,25 +42,14 @@ namespace api.Services
 
                 if (food != null)
                 {
-                    return new
-                    {
-                        Success = true,
-                        Data = food
-                    };
+                    return food;
                 }
 
-                return new
-                {
-                    Success = false
-                };
+                return null;
             }
             catch (Exception)
             {
-                return new
-                {
-                    Success = false,
-                    Message = "Food(GetById): error"
-                };
+                return null;
             }
         }
 
@@ -93,66 +71,29 @@ namespace api.Services
 
             }
 
-            return new
-            {
-                Success = false,
-                Message = "Food(Add): error"
-            };
+            return null;
         }
 
-        public async Task<dynamic> Update(IFormCollection data, int id)
+        public async Task<dynamic> Update(FoodModel updatedFood, int id)
         {
             try
             {
+                var food = _context.Foods.Find(id);
 
-                var files = data.Files;
+                food.Name = updatedFood.Name;
+                food.Price = updatedFood.Price;
+                food.Status = updatedFood.Status;
+                food.IsDeleted = updatedFood.IsDeleted;
+                food.Image = updatedFood.Image;
 
-
-                if (data.TryGetValue("foodData", out var someData))
-                {
-                    string imagePath = "";
-
-                    var newFood = JsonSerializer.Deserialize<FoodModel>(someData);
-                    var food = _context.Foods.Find(id);
-
-                    var dbFoodName = await _context.Foods.Where(food => food.Name == newFood.Name).ToListAsync();
-
-                    if (dbFoodName.Count > 0 && newFood.Name != food.Name) return new
-                    {
-                        Success = false,
-                        Message = "Tên món ăn đã tồn tại"
-                    };
-
-                    food.Name = newFood.Name;
-                    food.Price = newFood.Price;
-                    food.Status = newFood.Status;
-                    food.IsDeleted = newFood.IsDeleted;
-
-                    if (files.Count > 0)
-                    {
-                        imagePath = await ImageHelper.Upload(files[0], _webHostEnvironment);
-                        food.Image = imagePath;
-                    }
-
-                    await _context.SaveChangesAsync();
-
-                    return new
-                    {
-                        Success = true,
-                        Data = food
-                    };
-                }
+                await _context.SaveChangesAsync();
             }
             catch (Exception)
             {
-
+                
             }
 
-            return new
-            {
-                Success = false,
-                Message = "Food(Update): error"
-            };
+            return null;
         }
 
         public async Task<dynamic> Delete(int id)

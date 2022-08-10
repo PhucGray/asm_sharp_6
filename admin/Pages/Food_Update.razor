@@ -1,0 +1,112 @@
+﻿@page "/food/update/{id:int}"
+@using Blazored.Toast.Services
+@using Microsoft.Extensions.Logging
+@using share.Models.UI
+@using static System.Net.WebRequestMethods
+@inject IToastService toastService
+@inject HttpClient Http
+@inject ILogger<Food_Add> logger
+
+
+<EditForm Model="@foodModel" OnValidSubmit="@handleSubmit" class="mt-3 px-5">
+    <DataAnnotationsValidator  />
+    <div class="row col-12">
+        <div class="col-4">
+            <img src="@(foodImg != "" ? foodImg : "images/food-placeholder.png")" style="width: 100%;"/> <br />
+            <InputFile class="form-control" OnChange="@OnInputFileChanged" accept="image/png, image/jpeg, image/gif" id="inputFile" />
+            <InputText id="name" @bind-Value="foodModel.Image" class="form-control" style="position: absolute; top: -1000px;"/>
+            <div class="text-danger">
+                <ValidationMessage  For="@(() => foodModel.Image)" />
+            </div>
+        </div>
+
+        <div class="col-8">
+            <label for="name" class="form-label">Tên</label>
+            <InputText id="name" @bind-Value="foodModel.Name" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => foodModel.Name)" />
+            </div>
+    
+            <label for="price" class="form-label">Giá</label>
+            <InputNumber id="price" @bind-Value="foodModel.Price" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => foodModel.Price)" />
+            </div>
+
+            <div>
+                <label for="status" class="form-label">Trạng thái</label>
+                <div>
+                    <InputRadioGroup @bind-Value="@foodModel.Status">
+                        <InputRadio Value="true" id="status-true"/> <label for="status-true" class="form-label me-2">Còn hàng</label>
+                        <InputRadio Value="false" id="status-false"/> <label for="status-false" class="form-label">Hết hàng</label>
+                    </InputRadioGroup>
+                </div>
+            </div>
+    
+            <div>
+                <label for="status" class="form-label">Ẩn</label>
+                <div>
+                    <InputRadioGroup @bind-Value="@foodModel.IsDeleted">
+                        <InputRadio Value="true" id="isDeleted-true"/> <label for="status-true" class="form-label me-2">Có</label>
+                        <InputRadio Value="false" id="isDeleted-false"/> <label for="status-false" class="form-label">Không</label>
+                    </InputRadioGroup>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-50 py-2 mt-4 d-block mx-auto" disabled=@loading>
+        @if(loading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        } else
+        {
+            <span>Cập nhật</span>
+        }
+    </button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private bool loading { get; set; } = false;
+    private FoodModel foodModel { get; set; }
+    private string foodImg { get; set; } = "";
+    private bool status { get; set; } = true;
+    private ImageModel fileBase64;
+
+    protected override async Task OnInitializedAsync()
+    {
+        foodModel = await Http.GetFromJsonAsync<FoodModel>("https://localhost:44329/api/foods/" + id.ToString());
+        foodImg = foodModel.Image;
+    }
+
+    private async Task handleSubmit()
+    {
+        loading = true;
+
+        foodModel.Image = foodImg;
+
+        using (var msg = await Http.PutAsJsonAsync("https://localhost:44329/api/foods/" + id.ToString(), foodModel)) 
+
+        loading = false;
+        toastService.ShowSuccess("Sửa món ăn thành công", "Thông báo");
+    }
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        var resizedFile = await file.RequestImageFileAsync(file.ContentType, 640, 480);
+        var buf = new byte[resizedFile.Size]; 
+        using (var stream = resizedFile.OpenReadStream())
+        {
+            await stream.ReadAsync(buf); 
+        }
+        fileBase64 = new ImageModel { Base64data = Convert.ToBase64String(buf), ContentType = file.ContentType, FileName = file.Name };
+        foodImg = $"data:{fileBase64.ContentType};base64,{fileBase64.Base64data}";
+        foodModel.Image = foodImg;
+    }
+}

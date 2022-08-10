@@ -1,5 +1,12 @@
 ﻿@page "/food"
+@using System.Text.Json
+@using System.Globalization
+@using share.Models
+@using Microsoft.Extensions.Logging
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@inject ILogger<Food_Add> logger
+
 
 <div>
     <button @onclick="goToAdd" class="btn btn-primary mt-4 mb-3 px-5" style="margin-left: 20px;">Thêm</button>
@@ -17,36 +24,51 @@
       <th scope="col">Hành động</th>
     </tr>
   </thead>
+     
   <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Burger bò</td>
-      <td>
-          <img src="images/food-placeholder.png" height="50"/>
-      </td>
-      <td>20.000 VND</td>
-      <td>Còn hàng</td>
-      <td>
-         @* <button class="btn btn-info text-white">
-              <i class="bi bi-info-circle"></i>
-          </button>*@
+     @if(foods != null)
+     {
+         @foreach (var food in foods)
+         {
+            <tr>
+              <th scope="row">@food.Id</th>
+              <td>@food.Name</td>
+              <td>
+                  <img src="@food.Image" height="50"/>
+              </td>
+              <td>@(String.Format("{0:#,##0}", food.Price)) VNĐ</td>
+              <td>@(food.Status ? "Còn hàng" : "Hết hàng")</td>
+              <td>
+                  <button class="btn btn-success" @onclick="(() => goToDetail(food.Id))">
+                      <i class="bi bi-pencil"></i>
+                  </button>
 
-          <button class="btn btn-success">
-              <i class="bi bi-pencil"></i>
-          </button>
+                  <button class="btn btn-secondary">
+                      <i class="bi bi-x-lg"></i>
+                  </button>
+              </td>
+            </tr>
+         }
+     }
 
-          <button class="btn btn-secondary">
-              <i class="bi bi-x-lg"></i>
-          </button>
-      </td>
-    </tr>
   </tbody>
 </table>
 </div>
 
 @code {
+    private List<FoodModel> foods { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        foods = await Http.GetFromJsonAsync<List<FoodModel>>("https://localhost:44329/api/foods");
+    }
+
     private void goToAdd()
     {
         Navigation.NavigateTo("/food/add");
+    }
+
+    private void goToDetail(int id)
+    {
+        Navigation.NavigateTo("/food/update/" + id);
     }
 }
