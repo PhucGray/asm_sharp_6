@@ -1,12 +1,13 @@
 ﻿@page "/food"
 @using System.Text.Json
 @using System.Globalization
+@using Blazored.Toast.Services
 @using share.Models
 @using Microsoft.Extensions.Logging
 @inject NavigationManager Navigation
 @inject HttpClient Http
+@inject IToastService toastService
 @inject ILogger<Food_Add> logger
-
 
 <div>
     <button @onclick="goToAdd" class="btn btn-primary mt-4 mb-3 px-5" style="margin-left: 20px;">Thêm</button>
@@ -43,7 +44,7 @@
                       <i class="bi bi-pencil"></i>
                   </button>
 
-                  <button class="btn btn-secondary">
+                  <button class="btn btn-secondary" @onclick="(() => deleteFood(food.Id))">
                       <i class="bi bi-x-lg"></i>
                   </button>
               </td>
@@ -57,6 +58,7 @@
 
 @code {
     private List<FoodModel> foods { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         foods = await Http.GetFromJsonAsync<List<FoodModel>>("https://localhost:44329/api/foods");
@@ -70,5 +72,14 @@
     private void goToDetail(int id)
     {
         Navigation.NavigateTo("/food/update/" + id);
+    }
+
+    private async void deleteFood(int id)
+    {
+        await Http.DeleteAsync("https://localhost:44329/api/foods/" + id.ToString());
+        foods = await Http.GetFromJsonAsync<List<FoodModel>>("https://localhost:44329/api/foods");
+        logger.LogInformation(foods.Count.ToString());
+        toastService.ShowSuccess("Xoá món ăn thành công", "Thông báo");
+        StateHasChanged();
     }
 }

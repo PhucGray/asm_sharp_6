@@ -3,6 +3,7 @@
 @using Microsoft.Extensions.Logging
 @using share.Models.UI
 @using static System.Net.WebRequestMethods
+@inject NavigationManager Navigation
 @inject IToastService toastService
 @inject HttpClient Http
 @inject ILogger<Food_Add> logger
@@ -12,7 +13,7 @@
     <DataAnnotationsValidator  />
     <div class="row col-12">
         <div class="col-4">
-            <img src="@(foodImg != "" ? foodImg : "images/food-placeholder.png")" style="width: 100%;"/> <br />
+            <img src="@(foodImg != "images/food-placeholder.png" ? foodImg : "images/food-placeholder.png")" style="width: 100%;"/> <br />
             <InputFile class="form-control" OnChange="@OnInputFileChanged" accept="image/png, image/jpeg, image/gif" id="inputFile" />
             <InputText id="name" @bind-Value="foodModel.Image" class="form-control" style="position: absolute; top: -1000px;"/>
             <div class="text-danger">
@@ -70,7 +71,7 @@
 @code {
     private bool loading { get; set; } = false;
     private FoodModel foodModel = new();
-    private string foodImg { get; set; } = "";
+    private string foodImg { get; set; } = "images/food-placeholder.png";
     private bool status { get; set; } = true;
     private ImageModel fileBase64;
 
@@ -89,11 +90,12 @@
 
         using (var msg = await Http.PostAsJsonAsync("https://localhost:44329/api/foods", newFood)) 
 
-        loading = false;
-        toastService.ShowSuccess("Thêm món ăn thành công", "Thông báo");
+            loading = false;
         foodImg = "";
         fileBase64 = new ImageModel();
         foodModel = new FoodModel();
+        toastService.ShowSuccess("Thêm món ăn thành công", "Thông báo");
+        Navigation.NavigateTo("/food");
     }
 
     private async Task OnInputFileChanged(InputFileChangeEventArgs e)

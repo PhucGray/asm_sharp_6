@@ -105,20 +105,9 @@ namespace api.Services
                 {
                     _context.Foods.Remove(food);
                     await _context.SaveChangesAsync();
-
-                    ImageHelper.Delete(food.Image, _webHostEnvironment);
-
-                    return new
-                    {
-                        Success = true
-                    };
                 }
 
-                return new
-                {
-                    Success = false,
-                    Message = "Food(Delete): error"
-                };
+                return null;
             }
             catch (Exception)
             {
