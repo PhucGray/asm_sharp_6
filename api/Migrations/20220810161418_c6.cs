@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace api.Migrations
 {
-    public partial class api_csharp_6 : Migration
+    public partial class c6 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

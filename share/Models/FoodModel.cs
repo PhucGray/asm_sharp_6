@@ -22,6 +22,9 @@ namespace share.Models
 
         public string Image { get; set; }
 
+        [NotMapped]
+        public int Quantity { get; set; } = 1;
+
         public bool Status { get; set; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;

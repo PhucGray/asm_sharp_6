@@ -1,40 +1,59 @@
 ﻿@page "/detail/{id:int}"
 
+@using share.Models
+@using Blazored.LocalStorage
+@using share.Models.UI
+@inject ILocalStorageService localStorage
 @inject NavigationManager Navigation
 @inject IToastService toastService
+@inject HttpClient Http
 
 
-<div class="wrapper">
-    <div class="content">
-        <img class="food-img" src="images/burger.jpg"/>
-
-        <div class="flex-grow-1 px-3 ms-5">
-            <div class="food-name">Burger bò @id</div>
-
-            <div class="label">Số lượng</div>
-
-            <div class="d-flex align-items-center justify-content-between mt-1">
-                <div class="d-flex">
-                    <button class="btn btn-secondary" @onclick="decrease">-</button>
-                    <div class="quantity">@count</div>
-                    <button class="btn btn-warning" @onclick="increase">+</button>
+@if(foodModel != null)
+{
+    <div class="wrapper">
+        <div class="content">
+            <img class="food-img" src="@foodModel.Image"/>
+    
+            <div class="flex-grow-1 px-3 ms-5">
+                <div class="food-name">@id</div>
+    
+                <div class="label">Số lượng</div>
+    
+                <div class="d-flex align-items-center justify-content-between mt-1">
+                    <div class="d-flex">
+                        <button class="btn btn-secondary" @onclick="decrease">-</button>
+                        <div class="quantity">@count</div>
+                        <button class="btn btn-warning" @onclick="increase">+</button>
+                    </div>
+    
+                    <div class="price">@(String.Format("{0:#,##0}", foodModel.Price)) VNĐ</div>
                 </div>
-
-                <div class="price">46.000 VND</div>
+    
+                <button @onclick="add" class="btn btn-warning text-white fw-bold w-100 mt-4 py-3">Thêm vào giỏ</button>
+                <button @onclick="goToCart" class="btn btn-secondary text-white fw-bold w-100 mt-2 py-3">Đi đến giỏ hàng</button>
             </div>
-
-            <button @onclick="add" class="btn btn-warning text-white fw-bold w-100 mt-4 py-3">Thêm vào giỏ</button>
-            <button @onclick="goToCart" class="btn btn-secondary text-white fw-bold w-100 mt-2 py-3">Đi đến giỏ hàng</button>
         </div>
     </div>
-</div>
+}
 
 
 
 
 @code {
     [Parameter]
-    public int id { get; set; }
+    public int id { get; set; } = 0;
+
+    private FoodModel foodModel { get; set; }
+    private string foodImg { get; set; } = "";
+    private ImageModel fileBase64;
+
+    protected override async Task OnInitializedAsync()
+    {
+        foodModel = await Http.GetFromJsonAsync<FoodModel>("https://localhost:44329/api/foods/" + id);
+        foodImg = foodModel.Image;
+    }
+
 
     private int count = 1;
 
@@ -53,8 +72,30 @@
 
     //
 
-    private void add()
+    private async Task add()
     {
+        var cart = await localStorage.GetItemAsync<List<FoodModel>>("cart");
+        if(cart.Any(f => f.Id == foodModel.Id))
+        {
+            List<FoodModel> newCart = new List<FoodModel>();
+            foreach (var item in cart)
+            {
+                if(item.Id == foodModel.Id)
+                {
+                    item.Quantity += count;
+                }
+
+                newCart.Add(item);
+            }
+
+            await localStorage.SetItemAsync("cart", newCart);
+        } else
+        {
+            foodModel.Quantity = 1;
+            cart.Add(foodModel);
+            await localStorage.SetItemAsync("cart", cart);
+        }
+
         toastService.ShowSuccess("Thêm sản phẩm vào giỏ thành công", "Thông báo");
     }
 

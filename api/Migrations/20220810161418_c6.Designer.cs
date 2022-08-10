@@ -10,8 +10,8 @@ using share.Models;
 namespace api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220809151439_api_csharp_6")]
-    partial class api_csharp_6
+    [Migration("20220810161418_c6")]
+    partial class c6
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

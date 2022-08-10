@@ -1,69 +1,94 @@
 ﻿@page "/"
+@using Blazored.LocalStorage
 @using Microsoft.Extensions.Logging
+@using share.Models
+@inject ILocalStorageService localStorage
 @inject ILogger<Index> logger
 @inject NavigationManager Navigation
+@inject IToastService toastService
+@inject HttpClient Http
 
 <div class="foods">
-    <div class="food" @onclick="@(() => goToDetail(3))">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-    </div>
+   
 
-      <div class="food">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-      </div>
-
-      <div class="food">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-      </div>
-
-      <div class="food">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-      </div>
-
-       <div class="food">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-    </div>
-
-      <div class="food">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-      </div>
-
-      <div class="food">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-      </div>
-
-      <div class="food">
-        <img class="food-img" src="images/burger.jpg"/>
-        <div class="food-name">Burger bò</div>
-        <div class="food-price">20.000 VND</div>
-        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-      </div>
+    @if(foods != null)
+     {
+         @foreach (var food in foods)
+         {
+            <div class="food" style="cursor: default;">
+                <img class="food-img" src="@food.Image"/>
+                <div class="food-name">@food.Name</div>
+                <div class="food-price">@(String.Format("{0:#,##0}", food.Price)) VNĐ</div>
+                <div class="d-flex justify-content-center">
+                        <button class="btn btn-secondary" @onclick="(() => decrease(food))">-</button>
+                        <div style="border: 1px solid #d1d1d1;display: grid;place-items: center;width: 36px;">@food.Quantity</div>
+                        <button class="btn btn-warning" @onclick="(() => increase(food))">+</button>
+                    </div>
+                <button class="btn btn-primary mt-3" @onclick="(() => addToCart(food))">Thêm vào giỏ hàng</button>
+            </div>
+         }
+     }
 </div>
 
 @code {
+    private List<FoodModel> foods { get; set; }
+
+    private int count = 1;
+
+    private void decrease(FoodModel food)
+    {
+        if(food.Quantity > 1)
+        {
+            food.Quantity--;
+        }
+    }
+
+    private void increase(FoodModel food)
+    {
+        food.Quantity++;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        foods = await Http.GetFromJsonAsync<List<FoodModel>>("https://localhost:44329/api/foods");
+    }
+
     private void goToDetail(int id)
     {
         Navigation.NavigateTo("/detail/" + id);
+    }
+
+    private async Task addToCart(FoodModel food)
+    {
+        bool hasCart = await localStorage.ContainKeyAsync("cart");
+
+        if(!hasCart)
+        {
+            await localStorage.SetItemAsync("cart", new List<FoodModel>());
+        } 
+        var cart = await localStorage.GetItemAsync<List<FoodModel>>("cart");
+
+        if(cart.Any(f => f.Id == food.Id))
+        {
+            List<FoodModel> newCart = new List<FoodModel>();
+            foreach (var item in cart)
+            {
+                if(item.Id == food.Id)
+                {
+                    item.Quantity += count;
+                }
+
+                newCart.Add(item);
+            }
+
+            await localStorage.SetItemAsync("cart", newCart);
+        } else
+        {
+            food.Quantity = 1;
+            cart.Add(food);
+            await localStorage.SetItemAsync("cart", cart);
+        }
+
+        toastService.ShowSuccess("Thêm sản phẩm vào giỏ thành công", "Thông báo");
     }
 }
