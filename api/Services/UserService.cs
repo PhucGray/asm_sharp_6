@@ -44,12 +44,8 @@ namespace api.Services
         {
             try
             {
-                var customers = await _context.Users.Where(user => user.RoleId == 1).ToListAsync();
-                return new
-                {
-                    Success = true,
-                    Data = customers
-                };
+                var customers = await _context.Users.Where(user => user.RoleId == 2).ToListAsync();
+                return customers;
             }
             catch (Exception)
             {

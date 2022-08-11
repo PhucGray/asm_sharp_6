@@ -1,6 +1,12 @@
-﻿@using Microsoft.Extensions.Logging
+﻿@using Blazored.LocalStorage
+@using Blazored.Toast.Services
+@using share.Models
+@using share.Models.More
 @inject NavigationManager Navigation
-@inject ILogger<Sidebar> logger
+@inject ILocalStorageService localStorage
+@inject IToastService toastService
+
+
 
 <div class="sidebar-wrapper">
     <div class="text-white">Chào: Nguyễn Văn A</div>
@@ -24,6 +30,11 @@
     <div class="sidebar-item @(Navigation.Uri.Contains("order") ? "bg-primary" : null)" @onclick="goToOrder">
         <i class="bi bi-receipt-cutoff me-2"></i>
         <div>Quản lý hoá đơn</div>
+    </div>
+    
+    <div class="sidebar-item" @onclick="logout">
+        <i class="bi bi-box-arrow-right me-2"></i>
+        <div>Đăng xuất</div>
     </div>
 
    @* <div class="sidebar-item @(Navigation.Uri.Contains("analysis") ? "bg-primary" : null)" @onclick="goToAnalysis">
@@ -51,5 +62,12 @@
     private void goToAnalysis()
     {
         Navigation.NavigateTo("/analysis");
+    }
+
+    private async Task logout()
+    {
+        await localStorage.RemoveItemAsync("user");
+        toastService.ShowSuccess("Bạn vừa đăng xuất", "Thông báo");
+        Navigation.NavigateTo("/sign-in");
     }
 }

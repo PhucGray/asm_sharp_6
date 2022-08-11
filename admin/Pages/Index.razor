@@ -1,8 +1,37 @@
 ﻿@page "/"
+@using Blazored.LocalStorage
+@using Blazored.Toast.Services
+@using Microsoft.Extensions.Logging
+@using System.Globalization
+@using share.Models
+@inject ILocalStorageService localStorage
+@inject ILogger<Index> logger
+@inject NavigationManager Navigation
+@inject IToastService toastService
+@inject HttpClient Http
 
-<div class="h-100 w-100 d-flex justify-content-center align-items-center">
-    <h1 class="text-center mb-5">Welcome back!</h1>
-</div>
+@if(isSignedIn)
+{
+    <div class="h-100 w-100 d-flex justify-content-center align-items-center">
+        <h1 class="text-center mb-5">Welcome back!</h1>
+    </div>
+}
 
+@code {
+    private List<OrderModel> orderModelList { get; set;}
+    private UserModel user { get; set; }
+    private bool isSignedIn { get; set; } = true;
 
+    protected override async Task OnInitializedAsync()
+    {
+        bool checkIsSignedIn = await localStorage.ContainKeyAsync("user");
 
+        if(!checkIsSignedIn)
+        {
+            Navigation.NavigateTo("/sign-in");
+        }
+        {
+            isSignedIn = true;
+        }
+    }
+}

@@ -1,0 +1,94 @@
+﻿@page "/sign-in" 
+@layout Shared.BlankLayout
+@using Blazored.LocalStorage
+@using Blazored.Toast.Services
+@using share.Models.More
+@using share.Models.UI
+@using Microsoft.Extensions.Logging
+@inject ILogger<SignIn> logger
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject ILocalStorageService localStorage
+@inject IToastService toastService
+
+<EditForm Model="@signInModel" OnValidSubmit="@handleSubmit" style="max-width: 450px;margin-inline: auto; margin-top: 40px;">
+    <DataAnnotationsValidator />
+    <div class="form-sign-in">
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <InputText id="email" @bind-Value="signInModel.Email" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => signInModel.Email)" />
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <InputText id="password" @bind-Value="signInModel.Password" class="form-control" />
+            <div class="text-danger">
+                <ValidationMessage For="@(() => signInModel.Password)" />
+            </div>
+        </div>
+
+        
+        <button type="submit" class="btn btn-primary w-100 mt-4">
+             @if(loading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        } else
+        {
+            <span>Đăng nhập</span>
+        }
+        </button>
+    </div>
+</EditForm>
+
+<div class="text-center mt-3">
+    <div>
+        Chưa có tài khoản <button class="btn btn-link" @onclick="goToSignUp">Đăng ký</button>
+    </div>
+</div>
+
+@code {
+    private SignInModel signInModel = new();
+    private SignInResModel signInRes { get; set; }
+    private bool loading { get; set; } = false;
+
+    private async Task handleSubmit()
+    {
+        loading = true;
+
+        var res = await Http.PostAsJsonAsync("https://localhost:44329/api/auth/sign-in", new
+        {
+            Email = signInModel.Email,
+            Password = signInModel.Password,
+        });
+
+        string response = await res.Content.ReadAsStringAsync();
+        signInRes = Newtonsoft.Json.JsonConvert.DeserializeObject<SignInResModel>(response);
+
+        if(signInRes?.Email != null)
+        {
+            if(signInRes.RoleId == 1)
+            {
+                await localStorage.SetItemAsync("user", signInRes);
+                toastService.ShowSuccess("Đăng nhập thành công", "Thông báo");
+                Navigation.NavigateTo("/", true);
+            }
+            else
+            {
+                toastService.ShowError("Vui lòng đăng nhập bằng tài khoản admin", "Thông báo");
+            }
+        } else
+        {
+            toastService.ShowError("Email hoặc mật khẩu không chính xác", "Thông báo");
+        }
+
+        loading = false;
+    }
+
+    private void goToSignUp()
+    {
+        Navigation.NavigateTo("/sign-up");   
+    }
+}

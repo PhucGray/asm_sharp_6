@@ -1,4 +1,13 @@
 ﻿@page "/customer"
+@using System.Text.Json
+@using System.Globalization
+@using Blazored.Toast.Services
+@using share.Models
+@using Microsoft.Extensions.Logging
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IToastService toastService
+@inject ILogger<Food_Add> logger
 
 <div style="padding: 20px;">
     <table class="table table-hover">
@@ -12,29 +21,26 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Nguyễn Văn A</td>
-      <td>a@gmail.com</td>
-      <td>0344594044</td>
-      @*<td>
-          <button class="btn btn-info text-white">
-              <i class="bi bi-info-circle"></i>
-          </button>
-
-          <button class="btn btn-success">
-              <i class="bi bi-pencil"></i>
-          </button>
-
-          <button class="btn btn-secondary">
-              <i class="bi bi-x-lg"></i>
-          </button>
-      </td>*@
-    </tr>
+    @if(customers != null) {
+        @foreach (var customer in customers) {
+            <tr>
+              <th scope="row">@customer.Id</th>
+              <td>@customer.FullName</td>
+              <td>@customer.Email</td>
+              <td>@customer.Phone</td>
+            </tr>
+        }
+    }
+    
   </tbody>
 </table>
 </div>
 
 @code {
+    private List<UserModel> customers { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await Http.GetFromJsonAsync<List<UserModel>>("https://localhost:44329/api/users/customers");
+    }
 }

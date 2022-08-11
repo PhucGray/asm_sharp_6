@@ -5,11 +5,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
 		<PackageReference Include="Blazored.Toast" Version="3.2.2" />
 		<PackageReference Include="bootstrap" Version="5.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.16" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.16" PrivateAssets="all" />
 		<PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
