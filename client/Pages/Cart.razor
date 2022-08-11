@@ -119,7 +119,11 @@
         if(hasUser)
         {
             user = await localStorage.GetItemAsync<UserModel>("user");
-        } 
+        } else
+        {
+            Navigation.NavigateTo("/sign-in");
+            return;
+        }
 
         var order = new OrderModel()
         {
@@ -127,7 +131,7 @@
             VAT = 10,
             Address = "HCM",
             Note = "HCM",
-            UserId = hasUser ? user.Id : 0
+            UserId = user.Id
         };
 
         var res = await Http.PostAsJsonAsync("https://localhost:44329/api/orders/order", order);

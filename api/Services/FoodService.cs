@@ -25,7 +25,7 @@ namespace api.Services
         {
             try
             {
-                var foods = await _context.Foods.ToListAsync();
+                var foods = await _context.Foods.Where(food => food.IsDeleted == false).ToListAsync();
                 return foods;
             }
             catch (Exception)
@@ -33,6 +33,21 @@ namespace api.Services
                 return null;
             }
         }
+
+        public async Task<dynamic> Search(string keyword)
+        {
+            try
+            {
+                var foods = await _context.Foods.Where(food => food.Name.ToLower().Contains(keyword.ToLower())).ToListAsync();
+
+                return foods;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
 
         public async Task<dynamic> GetById(int id)
         {

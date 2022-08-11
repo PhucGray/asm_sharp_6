@@ -25,12 +25,13 @@ namespace api.Controllers
         }
 
         //// GET api/foods
-        //[HttpGet]
-        //[Route("search")]
-        //public async Task<dynamic> Search([FromQuery(Name = "keyword")] string keyword)
-        //{
-        //    return await _food.Search(keyword);
-        //}
+        [HttpGet]
+        [Route("search")]
+        public async Task<dynamic> Search()
+        {
+            string keyword = Request.Query["keyword"].ToString();
+            return await _food.Search(keyword);
+        }
 
         // GET api/foods/3
         [HttpGet("{id}")]

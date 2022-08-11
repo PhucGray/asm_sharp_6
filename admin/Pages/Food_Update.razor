@@ -37,20 +37,39 @@
             <div>
                 <label for="status" class="form-label">Trạng thái</label>
                 <div>
-                    <InputRadioGroup @bind-Value="@foodModel.Status">
-                        <InputRadio Value="true" id="status-true"/> <label for="status-true" class="form-label me-2">Còn hàng</label>
-                        <InputRadio Value="false" id="status-false"/> <label for="status-false" class="form-label">Hết hàng</label>
-                    </InputRadioGroup>
+                    <div class="form-check form-check-inline">
+                      <input checked="@(foodModel.Status == true)" @onclick="(() => foodModel.Status = true)" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                      <label @onclick="(() => foodModel.Status = true)" class="form-check-label" for="flexRadioDefault1">
+                        Còn hàng
+                      </label>
+                    </div>
+                    
+                    <div class="form-check form-check-inline">
+                      <input checked="@(foodModel.Status == false)" @onclick="(() => foodModel.Status = false)"  class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                      <label @onclick="(() => foodModel.Status = false)" class="form-check-label" for="flexRadioDefault2">
+                        Hết hàng
+                      </label>
+                    </div>
                 </div>
             </div>
     
-            <div>
+
+              <div>
                 <label for="status" class="form-label">Ẩn</label>
                 <div>
-                    <InputRadioGroup @bind-Value="@foodModel.IsDeleted">
-                        <InputRadio Value="true" id="isDeleted-true"/> <label for="status-true" class="form-label me-2">Có</label>
-                        <InputRadio Value="false" id="isDeleted-false"/> <label for="status-false" class="form-label">Không</label>
-                    </InputRadioGroup>
+                    <div class="form-check form-check-inline">
+                      <input checked="@(foodModel.IsDeleted == true)" @onclick="(() => foodModel.IsDeleted = true)" class="form-check-input" type="radio" name="a" id="flexRadioDefault3">
+                      <label @onclick="(() => foodModel.IsDeleted = true)" class="form-check-label" for="flexRadioDefault3">
+                        Có
+                      </label>
+                    </div>
+                    
+                    <div class="form-check form-check-inline">
+                      <input checked="@(foodModel.IsDeleted == false)" @onclick="(() => foodModel.IsDeleted = false)"  class="form-check-input" type="radio" name="a" id="flexRadioDefault4">
+                      <label @onclick="(() => foodModel.IsDeleted = false)" class="form-check-label" for="flexRadioDefault4">
+                        Không
+                      </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,8 +94,15 @@
     private bool loading { get; set; } = false;
     private FoodModel foodModel { get; set; }
     private string foodImg { get; set; } = "";
-    private bool status { get; set; } = true;
     private ImageModel fileBase64;
+
+    private bool isDeleted { get; set; } = false;
+
+    private void handleStatusChange(bool value)
+    {
+        logger.LogInformation(value.ToString());
+        foodModel.Status = value;
+    }
 
     protected override async Task OnInitializedAsync()
     {
