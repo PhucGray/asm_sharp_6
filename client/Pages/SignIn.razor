@@ -1,8 +1,13 @@
 ﻿@page "/sign-in" 
+@using Blazored.LocalStorage
+@using share.Models.More
 @using share.Models.UI
 @using Microsoft.Extensions.Logging
 @inject ILogger<SignIn> logger
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@inject ILocalStorageService localStorage
+@inject IToastService toastService
 
 <EditForm Model="@signInModel" OnValidSubmit="@handleSubmit">
     <DataAnnotationsValidator />
@@ -24,7 +29,15 @@
         </div>
 
         
-        <button type="submit" class="btn btn-primary w-100 mt-4">Đăng nhập</button>
+        <button type="submit" class="btn btn-primary w-100 mt-4">
+             @if(loading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        } else
+        {
+            <span>Đăng nhập</span>
+        }
+        </button>
     </div>
 </EditForm>
 
@@ -36,11 +49,33 @@
 
 @code {
     private SignInModel signInModel = new();
+    private SignInResModel signInRes { get; set; }
+    private bool loading { get; set; } = false;
 
-    private void handleSubmit()
+    private async Task handleSubmit()
     {
-        logger.LogInformation(signInModel.Email);
-        logger.LogInformation(signInModel.Password);
+        loading = true;
+
+        var res = await Http.PostAsJsonAsync("https://localhost:44329/api/auth/sign-in", new
+        {
+            Email = signInModel.Email,
+            Password = signInModel.Password,
+        });
+
+        string response = await res.Content.ReadAsStringAsync();
+        signInRes = Newtonsoft.Json.JsonConvert.DeserializeObject<SignInResModel>(response);
+
+        if(signInRes?.Email != null)
+        {
+            await localStorage.SetItemAsync("user", signInRes);
+            toastService.ShowSuccess("Đăng nhập thành công", "Thông báo");
+            Navigation.NavigateTo("/", true);
+        } else
+        {
+            toastService.ShowError("Đăng nhập thất bại", "Thông báo");
+        }
+
+        loading = false;
     }
 
     private void goToSignUp()

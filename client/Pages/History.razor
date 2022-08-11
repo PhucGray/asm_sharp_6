@@ -1,6 +1,18 @@
 ﻿@page "/history"
+@using Blazored.LocalStorage
+@using Microsoft.Extensions.Logging
+@using System.Globalization
+@using share.Models
+@inject ILocalStorageService localStorage
+@inject ILogger<Index> logger
+@inject NavigationManager Navigation
+@inject IToastService toastService
+@inject HttpClient Http
 
-<div class="history-wrapper">
+@if (orderModelList != null)
+{
+    
+    <div class="history-wrapper">
     <table class="table table-hover">
       <thead>
         <tr>
@@ -11,16 +23,51 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th>1</th>
-          <td>200.000 VND</td>
-          <td>07/08/2022</td>
-          <td>Đang giao</td>
+          @foreach (var item in orderModelList)
+    {
+         <tr>
+          <th>@item.Id</th>
+          <td>@(String.Format("{0:#,##0}", item.Price)) VNĐ</td>
+          <td>@(item.CreatedAt.ToString("dd/M/yyyy", CultureInfo.InvariantCulture))</td>
+                        @if(item.OrderStatusId == 1)
+                        {
+                            <td class="text-success fw-bold">Đang chờ</td>
+                        }
+                         @if(item.OrderStatusId == 2)
+                        {
+                            <td class="text-warning fw-bold">Đang giao</td>
+                        }
+                         @if(item.OrderStatusId == 3)
+                        {
+                            <td class="text-primary fw-bold">Hoàn thành</td>
+                        }
         </tr>
+    }
+       
       </tbody>
     </table>
 </div>
+}
+
+
 
 @code {
+    private OrderDetailModel orderDetailModel { get; set; }
+    private List<OrderModel> orderModelList { get; set; }
+    private UserModel user { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        bool hasUser = await localStorage.ContainKeyAsync("user");
+
+
+        if(hasUser)
+        {
+            user = await localStorage.GetItemAsync<UserModel>("user");
+            orderModelList = await Http.GetFromJsonAsync<List<OrderModel>>("https://localhost:44329/api/orders/history/"+user.Id.ToString());
+          
+        } 
+
+        
+    }
 }

@@ -48,26 +48,14 @@ namespace api.Services
                         RoleId = user.RoleId
                     };
 
-                    return new
-                    {
-                        Success = true,
-                        Data = res
-                    };
+                    return res;
                 }
 
-                return new
-                {
-                    Success = false,
-                    Message = "Email hoặc mật khẩu không chính xác"
-                };
+                return null;
             }
             catch (Exception)
             {
-                return new
-                {
-                    Success = false,
-                    Message = "Server error: login"
-                };
+                return null;
             }
         }
 
@@ -85,7 +73,7 @@ namespace api.Services
                     Message = "Email đã được đăng ký"
                 };
 
-                signUpData.RoleId = 3;
+                signUpData.RoleId = 2;
                 signUpData.Password = PasswordHelper.Hash(signUpData.Password);
 
                 await _context.Users.AddAsync(signUpData);

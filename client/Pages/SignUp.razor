@@ -3,6 +3,8 @@
 @using Microsoft.Extensions.Logging
 @inject ILogger<SignIn> logger
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IToastService toastService
 
 <EditForm Model="@signUpModel" OnValidSubmit="@handleSubmit">
     <DataAnnotationsValidator />
@@ -53,11 +55,17 @@
 @code {
     private SignUpModel signUpModel = new();
 
-    private void handleSubmit()
+    private async Task handleSubmit()
     {
-        logger.LogInformation(signUpModel.FullName);
-        logger.LogInformation(signUpModel.Email);
-        logger.LogInformation(signUpModel.Password);
+        await Http.PostAsJsonAsync("https://localhost:44329/api/auth/sign-up", new
+        {
+            FullName = signUpModel.Email,
+            Email = signUpModel.Email,
+            Password = signUpModel.Password,
+            Phone = signUpModel.Phone,
+            Address = "HCM"
+        });
+        toastService.ShowSuccess("Đăng ký thành công", "Thông báo");
     }
 
     private void goToSignIn()

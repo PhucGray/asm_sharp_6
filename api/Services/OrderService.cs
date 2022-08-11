@@ -22,11 +22,7 @@ namespace api.Services
             try
             {
                 var orders = await _context.Orders.Include(order => order.User).ToListAsync();
-                return new
-                {
-                    Success = true,
-                    Data = orders
-                };
+                return orders;
             }
             catch (Exception)
             {
@@ -88,11 +84,7 @@ namespace api.Services
             {
                 var orders = await _context.Orders.Where(order => order.UserId == userId).ToListAsync();
 
-                return new
-                {
-                    Success = true,
-                    Data = orders
-                };
+                return orders;
             }
             catch (Exception)
             {
@@ -130,14 +122,11 @@ namespace api.Services
         {
             try
             {
+                order.OrderStatusId = 1;
                 await _context.Orders.AddAsync(order);
                 _context.SaveChanges();
 
-                return new
-                {
-                    Success = true,
-                    Data = order
-                };
+                return order.Id;
             }
             catch (Exception)
             {

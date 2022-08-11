@@ -8,9 +8,13 @@
 @inject IToastService toastService
 @inject HttpClient Http
 
+@if(loading)
+{
+    <span class="spinner-border spinner-border mx-auto mt-5" role="status" aria-hidden="true"></span>
+}
+else
+{
 <div class="foods">
-   
-
     @if(foods != null)
      {
          @foreach (var food in foods)
@@ -29,9 +33,11 @@
          }
      }
 </div>
+}
 
 @code {
     private List<FoodModel> foods { get; set; }
+    private bool loading { get; set; } = true;
 
     private int count = 1;
 
@@ -51,6 +57,7 @@
     protected override async Task OnInitializedAsync()
     {
         foods = await Http.GetFromJsonAsync<List<FoodModel>>("https://localhost:44329/api/foods");
+        loading = false;
     }
 
     private void goToDetail(int id)
@@ -75,7 +82,7 @@
             {
                 if(item.Id == food.Id)
                 {
-                    item.Quantity += count;
+                    item.Quantity += food.Quantity;
                 }
 
                 newCart.Add(item);
@@ -84,7 +91,6 @@
             await localStorage.SetItemAsync("cart", newCart);
         } else
         {
-            food.Quantity = 1;
             cart.Add(food);
             await localStorage.SetItemAsync("cart", cart);
         }

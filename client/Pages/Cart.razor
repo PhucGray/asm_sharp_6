@@ -1,9 +1,12 @@
 ﻿@page "/cart"
 @using Blazored.LocalStorage
 @using share.Models
+@using Microsoft.Extensions.Logging
+@inject ILogger<SignIn> logger
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject ILocalStorageService localStorage
+@inject IToastService toastService
 
 <div class="wrapper">
     <div class="main">
@@ -29,7 +32,8 @@
             }
         </div>
 
-        <div style="width: 300px;">
+        @if(cart != null) {
+            <div style="width: 300px;">
             <div class="d-flex justify-content-between">
                 <div>Tạm tính</div>
                 <div>@(String.Format("{0:#,##0}", total)) VNĐ</div>
@@ -41,15 +45,28 @@
                 <div style="font-size: 20px;font-weight: bold;">Tổng tiền: <span class="text-danger">@(String.Format("{0:#,##0}", total)) VNĐ</span></div>
             </div>
 
-            <button class="btn btn-primary d-block w-100 py-2 mt-3 fw-bold text-light">THANH TOÁN</button>
+            <button @onclick="checkout" class="btn btn-primary d-block w-100 py-2 mt-3 fw-bold text-light">
+                 @if(loading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        } else
+        {
+            <span>THANH TOÁN</span>
+        }
+            </button>
             <button class="btn btn-light d-block w-100 py-2 mt-2 fw-bold" @onclick="goHome">TIẾP TỤC MUA SẮM</button>
         </div>
+        }
     </div>
 </div>
 
 @code {
     private List<FoodModel> cart { get; set; }
+    //private List<OrderDetailModel> orderDetailList { get; set; }
     private double total { get; set; } = 0;
+    private UserModel user { get; set; }
+    private bool loading { get; set; } = false;
+    private int orderId { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -96,16 +113,49 @@
 
     private async Task checkout()
     {
+        loading = true;
+        bool hasUser = await localStorage.ContainKeyAsync("user");
+
+        if(hasUser)
+        {
+            user = await localStorage.GetItemAsync<UserModel>("user");
+        } 
+
         var order = new OrderModel()
         {
             Price = total,
             VAT = 10,
             Address = "HCM",
             Note = "HCM",
-            UserId = 0
+            UserId = hasUser ? user.Id : 0
         };
 
-        await Http.PostAsJsonAsync("https://localhost:44329/api/orders/order", order);
+        var res = await Http.PostAsJsonAsync("https://localhost:44329/api/orders/order", order);
+
+        string response = await res.Content.ReadAsStringAsync();
+        orderId = Newtonsoft.Json.JsonConvert.DeserializeObject<int>(response);
+        List<OrderDetailModel> orderDetailList = new List<OrderDetailModel>();
+        for (int i = 0; i < cart.Count; i++)
+        {
+            var food = cart[i];
+            orderDetailList.Add(new OrderDetailModel()
+            {
+                FoodName = food.Name,
+                Price = food.Price,
+                Quantity = food.Quantity,
+                TotalPrice = food.Quantity * food.Price,
+                FoodId = food.Id,
+                OrderId = orderId
+            });
+        }
+
+
+        await Http.PostAsJsonAsync("https://localhost:44329/api/orders/orderDetails", orderDetailList);
+
+        await localStorage.RemoveItemAsync("cart");
+        toastService.ShowSuccess("Thanh toán thành công", "Thông báo");
+        loading = false;
+        Navigation.NavigateTo("/");
     }
 
     private void goHome()

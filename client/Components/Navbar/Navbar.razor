@@ -1,4 +1,9 @@
-﻿@inject NavigationManager Navigation
+﻿@using Blazored.LocalStorage
+@using share.Models
+@using share.Models.More
+@inject NavigationManager Navigation
+@inject ILocalStorageService localStorage
+@inject IToastService toastService
 
 <div class="navbar-wrapper">
     <img @onclick="goHome" height="50" src="svg/logo.svg" style="cursor: pointer;"/>
@@ -21,19 +26,35 @@
             <div>Giỏ hàng</div>
         </div>
 
-        <div @onclick="goToSignIn" class="navbar-right-item">
-            <i class="bi bi-person-circle" style="font-size: 26px;"></i>
-            <div>Đăng nhập</div>
-        </div>
-
-        @*<div @onclick="logout" class="navbar-right-item">
+        @if(user?.Id != null)
+        {
+            <div @onclick="logout" class="navbar-right-item">
             <i class="bi bi-box-arrow-right" style="font-size: 26px;"></i>
             <div>Đăng xuất</div>
-        </div>*@
+        </div>
+        } else
+        {
+            <div @onclick="goToSignIn" class="navbar-right-item">
+            <i class="bi bi-person-circle" style="font-size: 26px;"></i>
+            <div>Đăng nhập</div>
+            </div>
+        }
     </div>
 </div>
 
 @code {
+    private UserModel user { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        bool hasUser = await localStorage.ContainKeyAsync("user");
+
+        if(hasUser)
+        {
+            user = await localStorage.GetItemAsync<UserModel>("user");
+        } 
+
+    }
+
     private void goHome()
     {
         Navigation.NavigateTo("/");
@@ -54,8 +75,10 @@
         Navigation.NavigateTo("/sign-in");
     }
 
-    private void logout()
+    private async Task logout()
     {
-        
+        await localStorage.RemoveItemAsync("user");
+        toastService.ShowSuccess("Bạn vừa đăng xuất", "Thông báo");
+        Navigation.NavigateTo("/", true);
     }
 }
